@@ -1,0 +1,38 @@
+'''
+Created on Nov 3, 2013
+
+@author: Qizhen Ruan
+'''
+
+import time
+import inspect
+
+import twitter
+import settings
+import logging
+
+
+LOGGING = True
+
+if LOGGING:
+    logger = logging.basicConfig(filename='5750tweetspam.log',level=logging.INFO)
+
+
+def handle_rate_exceeded(err):
+    if LOGGING:
+        logging.error(inspect.stack()[1][3] + err[0][0]['message'])
+    if err[0][0]['code'] == 88:
+        time.sleep(10 * settings.COMMAND_INTERVAL)
+    else:
+        raise Exception(err)
+    
+def tweet_search(api, keyword):
+    while True:
+        try:
+            tweets = api.GetSearch(keyword, count = 5000)
+            time.sleep(settings.COMMAND_INTERVAL)
+            return tweets
+        except twitter.TwitterError as err:
+            handle_rate_exceeded(err)
+            
+            

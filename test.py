@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 
-'''Load the latest update for a Twitter user and leave it in an XHTML fragment'''
-
-__author__ = 'dewitt@google.com'
-
 
 import twitter
 import inspect
@@ -19,19 +15,21 @@ def main():
                    access_token_secret='UJgSMVp60ip7NM9j8h9iat6iXU8nQSMoPEBA5oJaSIcba',
                    debugHTTP=True)
      
-    item = api.GetUser('2153352006') #screen_name = 'BatuTurguteli17')
-    print item.GetStatusesCount()
-    print item.GetLocation()
-    print item.GetDescription()
-    print item.GetFollowersCount()
-    print item.GetFriendsCount()
-    print item.GetProfileBackgroundImageUrl()
-  
-#     results = api.GetFollowerIDs('ruanqizhen')
-#     print results
-#     for result in results:
-#         item = api.GetUser(result).AsDict()
-#         print item['id'], item['screen_name']
+#     item = api.GetUser('21650541112') #screen_name = 'BatuTurguteli17')
+#     print item.GetVerified()
+#     print item.GetStatusesCount()
+#     print item.GetFollowersCount()
+#     print item.GetFriendsCount()
+#     print item.GetProfileBackgroundImageUrl()
+#     print item.GetLocation()
+#     print item.GetDescription()
+#     print item
+    while True:
+        results = api.GetFollowerIDs('ruanqizhen')
+        print results
+#         for result in results:
+#             item = api.GetUser(result).AsDict()
+#             print item['id'], item['screen_name']
 
 
 
