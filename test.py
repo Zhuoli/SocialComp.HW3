@@ -15,18 +15,24 @@ def main():
                    access_token_secret='UJgSMVp60ip7NM9j8h9iat6iXU8nQSMoPEBA5oJaSIcba',
                    debugHTTP=True)
      
-#     item = api.GetUser('21650541112') #screen_name = 'BatuTurguteli17')
-#     print item.GetVerified()
-#     print item.GetStatusesCount()
-#     print item.GetFollowersCount()
-#     print item.GetFriendsCount()
-#     print item.GetProfileBackgroundImageUrl()
-#     print item.GetLocation()
-#     print item.GetDescription()
-#     print item
-    while True:
-        results = api.GetFollowerIDs('ruanqizhen')
-        print results
+     
+#     status = api.GetUserTimeline(screen_name = 'cs5750')
+#     for item in status:
+#         print item
+     
+    item = api.GetUser(2174000226)
+    print item.GetId()
+    print item.GetVerified()
+    print item.GetStatusesCount()
+    print item.GetFollowersCount()
+    print item.GetFriendsCount()
+    print item.GetProfileBackgroundImageUrl()
+    print item.GetLocation()
+    print item.GetDescription()
+    print item
+#     while True:
+#         results = api.GetFollowerIDs('ruanqizhen')
+#         print results
 #         for result in results:
 #             item = api.GetUser(result).AsDict()
 #             print item['id'], item['screen_name']

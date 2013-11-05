@@ -1,19 +1,12 @@
-#!/usr/bin/env python
-'''
-connect to Twitter and output user IDs that will be banned
-Created on Oct 31, 2013  @Qizhen
-'''
 
 import time
 import datetime
 import random
-    
+import threading  
+  
 import twitter_ex
 import settings
 
-
-
-       
 def is_user_spam(user):
     current_time = time.mktime(time.gmtime())
     created_time = time.mktime(time.strptime(user.GetCreatedAt(), "%a %b %d %H:%M:%S +0000 %Y"))
@@ -29,28 +22,35 @@ def is_url_spam(urls):
             if site in url.expanded_url:
                 return True
     return False
-            
-def crawl():
 
-    spammers = set()
-    normal_user = set()
-    
-    while True:
-        keyword_index = random.randrange(0, settings.KEYWORDS_COUNT)
-        tweets = twitter_ex.tweet_search(settings.crawler_api, settings.SUSPICIOUS_KEYWORDS[keyword_index])
-        for tweet in tweets:
-            if is_url_spam(tweet.urls):
-                user = tweet.GetUser()
-                user_id = user.GetId()
-                if not user_id in normal_user and not user_id in spammers:
-                    if is_user_spam(user):
-                        print user_id
-                        print user
-                        spammers.add(user_id)
-                    else:
-                        normal_user.add(user_id)
+
                         
     
 
-
-
+class CrawlerThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.stop_flag = False
+    
+    def run(self):
+        while not self.stop_flag:
+            keyword_index = random.randrange(0, settings.KEYWORDS_COUNT)
+            tweets = twitter_ex.tweet_search(settings.SUSPICIOUS_KEYWORDS[keyword_index])
+            
+            if settings.DEBUG:
+                print settings.SUSPICIOUS_KEYWORDS[keyword_index]
+                print len(tweets)
+            
+            for tweet in tweets:
+                if is_url_spam(tweet.urls):
+                    user = tweet.GetUser()
+                    user_id = user.GetId()
+                    if not twitter_ex.is_id_in_record(user_id):
+                        if is_user_spam(user):
+                            print user_id
+                            twitter_ex.add_to_spam_buffer(user_id)
+                        else:
+                            twitter_ex.add_to_normal_accounts(user_id)
+        
+    def stop(self):
+        self.stop_flag = True

@@ -4,10 +4,9 @@
 import time
 import datetime
 import logging
-
 import random
-    
 import twitter
+from dateutil.parser import parser
 
 COMMAND_INTERVAL = 15
 SUSPICIOUS_KEYWORDS = ['money', 'finance', 'mortgage', 'health', 'airline',
@@ -68,27 +67,88 @@ def is_user_spam(user):
     created_time = time.mktime(time.strptime(user.GetCreatedAt(), "%a %b %d %H:%M:%S +0000 %Y"))
     relative_created_time = datetime.timedelta(seconds = (current_time - created_time))
     is_spam &= relative_created_time < datetime.timedelta(days=7)
-<<<<<<< HEAD
 #     is_spam &= user.GetStatusesCount() > 5
 #     is_spam &= user.GetFriendsCount() > 10
 #     is_spam &= not user.GetLocation()
-=======
-    #is_spam &= user.GetStatusesCount() > 5
-    #is_spam &= user.GetFriendsCount() > 10
-    #is_spam &= not user.GetLocation()
->>>>>>> 20cb68f00ecc9e74ad9577092606a7116dcaddef
 
     #print user.GetProfileBackgroundImageUrl()
     return is_spam
-    
-            
+
+#@Author: Zhuoli
+def setPost(api,idlist,id):
+  if len(idlist) >= 10:
+    text = ''
+    while(len(idlist) > 0):
+      item = idlist.pop()
+      text = text + ' ' + str(item)
+    idlist.append(id)
+    api.PostUpdates(text)
+  else:
+    idlist.append(id)
+#@Author: Zhuoli
+def getTweets(api,user_id):
+  spam_id_list = []
+  statuses = api.GetUserTimeline(user_id)
+  for statue in statuses:
+    if isListOfID(statue.text):
+      sublist = text2list(statue.text)
+      spam_id_list.extend(sublist)
+  return spam_id_list
+#@Author: Zhuoli
+#GIVEN: A [lain text text
+#RETURN: TRUE if it is a list of id
+def isListOfID(text):
+  items = text.split(' ')
+  for item in items:
+    try:
+      if len(item) != 10:
+        return False
+      int(item)
+    except ValueError as errs:
+      return False
+  return True
+#@Author: Zhuoli
+#GIVEN: a plain text tweet
+#RETURN: A list of account id number
+def text2list(text):
+  texts = []
+  for item in text.split(' '):
+    try:
+      texts.append(int(item))
+    except ValueError as errs:
+      pass
+  return texts
+
+#@Author: Zhuoli
+def filterSpamAccount(api,spam_id_list):
+  spams = []
+  while len(spam_id_list) > 0:
+    spam = spam_id_list.pop()
+    if isSuspicious(api,spam):
+      spams.append(spam)
+  spam_id_list.extend(spams)
+
+#@Author: Zhuoli
+def isSuspicious(api,spam_id):
+  SUSPICIOUS_DAY = 7
+  p = parser()
+  user = api.GetUser(user_id = spam_id)
+  status = user.Status
+  creation = p.parse(status.created_at)
+  current = time.localtime()
+  dif = (current[0] - creation.year) * 365 +(current[1] - creation.month) * 30 +(current[2] - creation.day)
+  if dif > SUSPICIOUS_DAY:
+    return False
+  else:
+    return True
+
+
 def main():
+    CS5750_ID = 2151667861
     api = initialize()
-<<<<<<< HEAD
     spammers = set()
     normal_user = set()
-=======
->>>>>>> 20cb68f00ecc9e74ad9577092606a7116dcaddef
+    idlist = []
     while True:
         keyword_index = random.randrange(0, KEYWORDS_COUNT)
         seeds = get_users_search(api, SUSPICIOUS_KEYWORDS[keyword_index])
@@ -96,24 +156,15 @@ def main():
             followers = get_followers(api, seed.id)
             for follower in followers:
                 user = get_user(api, follower)
-<<<<<<< HEAD
                 user_id = user.GetId()
                 if not user_id in normal_user and not user_id in spammers:
                     if user != None and is_user_spam(user):
+                        setPost(api,idlist,user_id)
                         print user_id
-                        print user
                         spammers.add(user_id)
                     else:
                         normal_user.add(user_id)
    
-=======
-                f = open('spams.dat','a') 
-                if user != None and is_user_spam(user):
-                    print user.name
-                    f.write(user.name)
-                f.close()
->>>>>>> 20cb68f00ecc9e74ad9577092606a7116dcaddef
-
 
 
 
@@ -136,6 +187,8 @@ if __name__ == "__main__":
   ---api.GetTrendsWoeid()   // Return the top 1- trending topics for 
                             // a specific WOEID
   ---api.UsersLookup()      // Fetch extended information for this user
+                            // returns a list of twitter.User objects for 
+                            // the requested users
 
   *Class:
   User: id,name,screen_name,location
