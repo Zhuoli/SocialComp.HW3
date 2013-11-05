@@ -140,6 +140,11 @@ def isSuspicious(api,spam_id):
   if dif > SUSPICIOUS_DAY:
     return False
   else:
+    try:
+      item = api.GetUser(user_id = spam_id)
+      return true
+    except twitter.TwitterError as err:
+      return False
     return True
 
 
