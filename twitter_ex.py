@@ -61,6 +61,7 @@ def read_tweets():
     while True:
         try:
             status = settings.record_api.GetUserTimeline(user_id=settings.RECORD_ID, since_id=record_recent_id)
+
             user_ids = set()
             for item in status:
                 if item.GetId() > record_recent_id:
@@ -70,6 +71,7 @@ def read_tweets():
                 for user in ids:
                     user_ids.add(user)
             time.sleep(settings.COMMAND_INTERVAL)
+            return user_ids
         except twitter.TwitterError:
             return set()
   

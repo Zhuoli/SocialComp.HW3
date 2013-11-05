@@ -24,7 +24,8 @@ class RecorderThread(threading.Thread):
     def run(self):
         while not self.stop_flag:
             posted_ids = twitter_ex.read_tweets()
-            
+#             if settings.DEBUG:
+#                 print posted_ids
             for user_id in posted_ids:
                 if not twitter_ex.is_id_in_record(user_id):
                     if not twitter_ex.is_id_suspended(user_id):  
