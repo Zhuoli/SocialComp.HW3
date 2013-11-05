@@ -13,8 +13,22 @@ import logging
 
 
 if settings.DEBUG:
-    logger = logging.basicConfig(filename='5750tweetspam.log', level=logging.ERROR)
+    logger = logging.getLogger('QQ')
+    logger.setLevel(logging.DEBUG)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # create file handler which logs even debug messages
+    fh = logging.FileHandler('5750tweetspam.log')
+    fh.setLevel(logging.DEBUG)
+    # create console handler with a higher log level
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.ERROR)
 
+    fh.setFormatter(formatter)
+    #ch.setFormatter(formatter)
+    # add the handlers to the logger
+    logger.addHandler(fh)
+    logger.addHandler(ch)
 
 
 normal_accounts = set()
@@ -27,7 +41,7 @@ keword_recent_id = {}
 
 def handle_rate_exceeded(err):
     if settings.DEBUG:
-        logging.error(inspect.stack()[1][3] + err[0][0]['message'])
+        logger.error(inspect.stack()[1][3] + err[0][0]['message'])
     if err[0][0]['code'] == 88:
         time.sleep(10 * settings.COMMAND_INTERVAL)
     else:
@@ -47,12 +61,18 @@ def tweet_search(keyword):
             handle_rate_exceeded(err)
             
 def post_result(items):
+    if settings.DEBUG:
+        logger.info('post to twitter') 
+        logger.info(items) 
     while True:
         try:
             id_str = [str(i) for i in items]
+            for item in items:
+                add_to_posted_spams(item)
             items.clear()
             settings.record_api.PostUpdates(' '.join(id_str)) 
-            time.sleep(settings.COMMAND_INTERVAL)     
+            time.sleep(settings.COMMAND_INTERVAL) 
+            break    
         except twitter.TwitterError as err:
             handle_rate_exceeded(err)
 
@@ -61,7 +81,6 @@ def read_tweets():
     while True:
         try:
             status = settings.record_api.GetUserTimeline(user_id=settings.RECORD_ID, since_id=record_recent_id)
-
             user_ids = set()
             for item in status:
                 if item.GetId() > record_recent_id:
@@ -72,7 +91,7 @@ def read_tweets():
                     user_ids.add(user)
             time.sleep(settings.COMMAND_INTERVAL)
             return user_ids
-        except twitter.TwitterError:
+        except:
             return set()
   
 def is_id_suspended(user_id):
@@ -83,6 +102,9 @@ def is_id_suspended(user_id):
             return False
         except twitter.TwitterError as err:
             if err[0][0]['code'] == 63 or err[0][0]['code'] == 34:
+                
+                if settings.DEBUG:
+                    logger.info('suspended id: ' + str(user_id)) 
                 time.sleep(settings.COMMAND_INTERVAL)
                 return True
             else:
@@ -94,15 +116,15 @@ def is_id_in_record(user_id):
 
 def add_to_normal_accounts(user_id):
     normal_accounts.add(user_id)
-    
+#     if settings.DEBUG:
+#         logger.info('total accounts: %d' % len(normal_accounts)) 
+        
 def add_to_posted_spams(user_id):
     posted_spams.add(user_id)
     
 def add_to_spam_buffer(user_id):
     spam_buffer.add(user_id)
-    if len(spam_buffer) >= 10:
-        for item in spam_buffer:
-            add_to_posted_spams(item)
+    if len(spam_buffer) >= 5:
         post_result(spam_buffer)
         
     

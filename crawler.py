@@ -33,7 +33,7 @@ class CrawlerThread(threading.Thread):
         self.stop_flag = False
     
     def run(self):
-        keyword_index = 0
+        keyword_index = -1
         while not self.stop_flag:
             if keyword_index < settings.KEYWORDS_COUNT- 1:
                 keyword_index += 1

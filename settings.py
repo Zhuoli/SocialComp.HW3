@@ -13,12 +13,12 @@ SUSPICIOUS_KEYWORDS = ['health', 'realty', 'mortgage', 'fast', 'offer',
                        
                        'money', 'airline',
                        'download', 'adult', 'sex', 'music', 'game', 'following',
-                       'sell', 'buy', 'diet', 'jewelery', 'electronics', 'vehicle',
+                       'sell', 'buy', 'diet', 'electronics', 'vehicle',
                        'contest', 'lottery', 'prize', 'loans', 'girl',
                        'free', 'porn', 'dating', 'clearance', 'singles', 'income',
                        'boss', 'earn', 'extra', 'cash', 'business', 'tax',
                        'degree', 'diploma', 'affordable', 'bargain',
-                       'best', 'beneficiary', 'price', 'bucks', 'bonus', 'cheap',
+                       'best', 'price', 'bucks', 'bonus', 'cheap',
                        'rates', 'credit', 
                        'investment', 'lower', 'profit', 'dollars',
                        'debt', 'stock', 'chance', 'passwords', 'solution',
@@ -39,7 +39,11 @@ record_api = twitter.Api(consumer_key='otyqFeLTbZiRjlC3KhKZA',
                    access_token_key='2151667861-soLJni1pLpJ4TcLW6BJFSOiCGex9EaCGJWXZzSg',
                    access_token_secret='XmfzG6AubTEkYucRQ0kf10bxCfwT2AM9DkVbWTsnI8oeR',
                    debugHTTP=True)
-
+record_api_back = twitter.Api(consumer_key='sthLEx9i79j7kJFr9kMcA',
+                   consumer_secret='T1hxLPDQhtZD5fmwInI9S6idDc00NzKmouvHJYgaPs',
+                   access_token_key='2176776230-zlG2U53IXpBEoij55Lx81hb1lmnHVJW2dcFCtE2',
+                   access_token_secret='mliokAmXCxlio0WZkOaH5XkcLufBJ8gohxt2MP7olRfPp',
+                   debugHTTP=True)
 
 
 if TESTER == 'qizhen':
