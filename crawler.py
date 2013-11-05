@@ -11,8 +11,8 @@ def is_user_spam(user):
     current_time = time.mktime(time.gmtime())
     created_time = time.mktime(time.strptime(user.GetCreatedAt(), "%a %b %d %H:%M:%S +0000 %Y"))
     relative_created_time = datetime.timedelta(seconds = (current_time - created_time))
-    return relative_created_time < datetime.timedelta(days = settings.SPAM_CREATED_DAY_LIMIT) \
-        and user.GetFriendsCount() > settings.SPAM_FRIENDS_LIMIT
+    return relative_created_time < datetime.timedelta(days = settings.SPAM_CREATED_DAY_LIMIT) #\
+#        and user.GetFriendsCount() > settings.SPAM_FRIENDS_LIMIT
     
 def is_url_spam(urls):
     suspicus_sites = ['bit.ly', 'tinyurl.com', 'is.gd', 'goo.gl', 'ow.ly', 
@@ -33,8 +33,12 @@ class CrawlerThread(threading.Thread):
         self.stop_flag = False
     
     def run(self):
+        keyword_index = 0
         while not self.stop_flag:
-            keyword_index = random.randrange(0, settings.KEYWORDS_COUNT)
+            if keyword_index < settings.KEYWORDS_COUNT- 1:
+                keyword_index += 1
+            else:
+                keyword_index = 0
             tweets = twitter_ex.tweet_search(settings.SUSPICIOUS_KEYWORDS[keyword_index])
             
             if settings.DEBUG:

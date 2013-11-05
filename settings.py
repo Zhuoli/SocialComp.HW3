@@ -4,14 +4,14 @@ import twitter
 
 DEBUG = True
 
-TESTER = ''   # available values:  'qizhen', 'zhouli', 'xiaofeng'
+TESTER = 'qizhen'   # available values:  'qizhen', 'zhouli', 'xiaofeng'
 
 
 COMMAND_INTERVAL = 15
 SUSPICIOUS_KEYWORDS = ['health', 'realty', 'mortgage', 'fast', 'offer', 
-                       'check', 'easy', 
+                       'check', 'easy', 'online', 'real estate', 'finance', 
                        
-                       'money', 'finance', 'airline',
+                       'money', 'airline',
                        'download', 'adult', 'sex', 'music', 'game', 'following',
                        'sell', 'buy', 'diet', 'jewelery', 'electronics', 'vehicle',
                        'contest', 'lottery', 'prize', 'loans', 'girl',
@@ -23,10 +23,10 @@ SUSPICIOUS_KEYWORDS = ['health', 'realty', 'mortgage', 'fast', 'offer',
                        'investment', 'lower', 'profit', 'dollars',
                        'debt', 'stock', 'chance', 'passwords', 'solution',
                        'teen', 'wife', 'success', 'cures', 'viagra', 'xanax',
-                       'weight', 'bill', 'inventory',
-                       'available', 'fingertips', 'online', 'property' 'real estate',
+                       'weight', 'bill',
+                       'available', 'property', 
                        'certificate',
-                       'MLM', 'cost', 'mate',
+                       'cost', 'mate',
                        'pharmacy', 'Opportunity', 'Pennies']
 KEYWORDS_COUNT = len(SUSPICIOUS_KEYWORDS)
 

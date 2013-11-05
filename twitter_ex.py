@@ -20,7 +20,9 @@ if settings.DEBUG:
 normal_accounts = set()
 posted_spams = set()
 spam_buffer = set()
-recent_id = 396755128352784384
+
+record_recent_id = 396755128352784384
+keword_recent_id = {}
 
 
 def handle_rate_exceeded(err):
@@ -34,7 +36,11 @@ def handle_rate_exceeded(err):
 def tweet_search(keyword):
     while True:
         try:
-            tweets = settings.crawler_api.GetSearch(keyword, count = 5000)
+            last_id = keword_recent_id.get(keyword, 0)
+            tweets = settings.crawler_api.GetSearch(keyword, since_id=last_id, count = 5000, result_type="recent")
+            if len(tweets) > 0:
+                last_id = tweets[0].GetId()
+            keword_recent_id[keyword] = last_id
             time.sleep(settings.COMMAND_INTERVAL)
             return tweets
         except twitter.TwitterError as err:
@@ -44,20 +50,21 @@ def post_result(items):
     while True:
         try:
             id_str = [str(i) for i in items]
+            items.clear()
             settings.record_api.PostUpdates(' '.join(id_str)) 
             time.sleep(settings.COMMAND_INTERVAL)     
         except twitter.TwitterError as err:
             handle_rate_exceeded(err)
 
 def read_tweets():
-    global recent_id
+    global record_recent_id
     while True:
         try:
-            status = settings.record_api.GetUserTimeline(user_id=settings.RECORD_ID, since_id=recent_id)
+            status = settings.record_api.GetUserTimeline(user_id=settings.RECORD_ID, since_id=record_recent_id)
             user_ids = set()
             for item in status:
-                if status.GetId() > recent_id:
-                    recent_id = status.GetId
+                if item.GetId() > record_recent_id:
+                    record_recent_id = item.GetId()
                 text = item.GetText()
                 ids = re.findall(r"\D(\d{10})\D", " "+text+" ")
                 for user in ids:
@@ -95,6 +102,6 @@ def add_to_spam_buffer(user_id):
         for item in spam_buffer:
             add_to_posted_spams(item)
         post_result(spam_buffer)
-        spam_buffer.clear()
+        
     
     
