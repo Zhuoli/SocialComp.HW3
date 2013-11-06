@@ -6,6 +6,7 @@ Created on Oct 29, 2013  @Qizhen
 import time
 import crawler
 import recorder
+import settings
 
 
 def main():
@@ -19,6 +20,9 @@ def main():
             
             twitter_crawler.join()
         except:
+            if settings.DEBUG:
+                print '**************** exception, restart ******************************' 
+                    
             try:
                 twitter_crawler.stop()
             except:

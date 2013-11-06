@@ -115,6 +115,8 @@ def is_id_in_record(user_id):
     return user_id in normal_accounts or user_id in posted_spams or user_id in spam_buffer
 
 def add_to_normal_accounts(user_id):
+    if len(normal_accounts) > 100000:
+        normal_accounts.clear()
     normal_accounts.add(user_id)
 #     if settings.DEBUG:
 #         logger.info('total accounts: %d' % len(normal_accounts)) 
@@ -124,7 +126,7 @@ def add_to_posted_spams(user_id):
     
 def add_to_spam_buffer(user_id):
     spam_buffer.add(user_id)
-    if len(spam_buffer) >= 5:
+    if len(spam_buffer) >= settings.RECORD_LENGTH:
         post_result(spam_buffer)
         
     

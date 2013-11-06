@@ -33,6 +33,8 @@ KEYWORDS_COUNT = len(SUSPICIOUS_KEYWORDS)
 SPAM_CREATED_DAY_LIMIT = 4
 SPAM_FRIENDS_LIMIT = 0
 
+RECORD_LENGTH = 10
+
 RECORD_ID = 2151667861
 record_api = twitter.Api(consumer_key='otyqFeLTbZiRjlC3KhKZA',
                    consumer_secret='s4EjBZgvaTkEyRyARigkRjCzLnhlfe63WYgNgPpO4',

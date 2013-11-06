@@ -1,8 +1,8 @@
 
 import time
 import datetime
-import random
 import threading  
+import logging
   
 import twitter_ex
 import settings
@@ -33,6 +33,8 @@ class CrawlerThread(threading.Thread):
         self.stop_flag = False
     
     def run(self):
+        if settings.DEBUG:
+            logger = logging.getLogger('QQ')
         keyword_index = -1
         while not self.stop_flag:
             if keyword_index < settings.KEYWORDS_COUNT- 1:
@@ -42,8 +44,7 @@ class CrawlerThread(threading.Thread):
             tweets = twitter_ex.tweet_search(settings.SUSPICIOUS_KEYWORDS[keyword_index])
             
             if settings.DEBUG:
-                print settings.SUSPICIOUS_KEYWORDS[keyword_index]
-                print len(tweets)
+                logger.info('%s: %d' % (settings.SUSPICIOUS_KEYWORDS[keyword_index], len(tweets)))
             
             for tweet in tweets:
                 if is_url_spam(tweet.urls):
