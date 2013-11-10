@@ -1,11 +1,2 @@
-#!/usr/bin/perl
-
-$| = 1;
-
-print "BarackObama\n";
-sleep(3);
-print "813286\n";
-sleep(3);
-print "14868835\n";
-sleep(3);
-print "2901990342094204\n";
+#!/bin/bash
+python 5750tweetspam.py
