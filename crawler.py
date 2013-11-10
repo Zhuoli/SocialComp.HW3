@@ -1,18 +1,8 @@
-
-import time
-import datetime
 import threading  
 import logging
   
 import twitter_ex
 import settings
-
-def is_user_spam(user):
-    current_time = time.mktime(time.gmtime())
-    created_time = time.mktime(time.strptime(user.GetCreatedAt(), "%a %b %d %H:%M:%S +0000 %Y"))
-    relative_created_time = datetime.timedelta(seconds = (current_time - created_time))
-    return relative_created_time < datetime.timedelta(days = settings.SPAM_CREATED_DAY_LIMIT) #\
-#        and user.GetFriendsCount() > settings.SPAM_FRIENDS_LIMIT
     
 def is_url_spam(urls):
     suspicus_sites = ['bit.ly', 'tinyurl.com', 'is.gd', 'goo.gl', 'ow.ly', 
@@ -23,10 +13,6 @@ def is_url_spam(urls):
                 return True
     return False
 
-
-                        
-    
-
 class CrawlerThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
@@ -35,27 +21,33 @@ class CrawlerThread(threading.Thread):
     def run(self):
         if settings.DEBUG:
             logger = logging.getLogger('QQ')
-        keyword_index = -1
-        while not self.stop_flag:
-            if keyword_index < settings.KEYWORDS_COUNT- 1:
-                keyword_index += 1
-            else:
-                keyword_index = 0
-            tweets = twitter_ex.tweet_search(settings.SUSPICIOUS_KEYWORDS[keyword_index])
-            
+        try:
+            keyword_index = -1
+            while not self.stop_flag:
+                if keyword_index < settings.KEYWORDS_COUNT- 1:
+                    keyword_index += 1
+                else:
+                    keyword_index = 0
+                tweets = twitter_ex.tweet_search(settings.SUSPICIOUS_KEYWORDS[keyword_index])
+                
+#                 if settings.DEBUG:
+#                     logger.info('%s: %d' % (settings.SUSPICIOUS_KEYWORDS[keyword_index], len(tweets)))
+                
+                for tweet in tweets:
+                    if is_url_spam(tweet.urls):
+                        user = tweet.GetUser()
+                        user_id = user.GetId()
+                        if not twitter_ex.is_id_in_record(user_id):
+                            if twitter_ex.is_user_spam(user):
+                                print user_id
+                                if settings.DEBUG:
+                                    logger.info('newly found spam: %d' % user_id)
+                                twitter_ex.add_to_spam_buffer(user_id)
+                            else:
+                                twitter_ex.add_to_normal_accounts(user_id)
+        except:
             if settings.DEBUG:
-                logger.info('%s: %d' % (settings.SUSPICIOUS_KEYWORDS[keyword_index], len(tweets)))
-            
-            for tweet in tweets:
-                if is_url_spam(tweet.urls):
-                    user = tweet.GetUser()
-                    user_id = user.GetId()
-                    if not twitter_ex.is_id_in_record(user_id):
-                        if is_user_spam(user):
-                            print user_id
-                            twitter_ex.add_to_spam_buffer(user_id)
-                        else:
-                            twitter_ex.add_to_normal_accounts(user_id)
+                logger.info('CrawlerThread exception')
         
     def stop(self):
         self.stop_flag = True

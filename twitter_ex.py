@@ -10,13 +10,13 @@ import re
 import twitter
 import settings
 import logging
-
+import datetime
 
 if settings.DEBUG:
     logger = logging.getLogger('QQ')
     logger.setLevel(logging.DEBUG)
     # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     # create file handler which logs even debug messages
     fh = logging.FileHandler('5750tweetspam.log')
     fh.setLevel(logging.DEBUG)
@@ -70,7 +70,7 @@ def post_result(items):
             for item in items:
                 add_to_posted_spams(item)
             items.clear()
-            settings.record_api.PostUpdates(' '.join(id_str)) 
+            settings.write_api.PostUpdates(settings.SEP.join(id_str)) 
             time.sleep(settings.COMMAND_INTERVAL) 
             break    
         except twitter.TwitterError as err:
@@ -80,7 +80,9 @@ def read_tweets():
     global record_recent_id
     while True:
         try:
-            status = settings.record_api.GetUserTimeline(user_id=settings.RECORD_ID, since_id=record_recent_id)
+            status = settings.read_api.GetUserTimeline(user_id=settings.RECORD_ID, since_id=record_recent_id, count=200)
+            if settings.DEBUG:
+                logger.info('get %d of record tweets.' % len(status)) 
             user_ids = set()
             for item in status:
                 if item.GetId() > record_recent_id:
@@ -94,19 +96,26 @@ def read_tweets():
         except:
             return set()
   
+def is_user_spam(user):
+    current_time = time.mktime(time.gmtime())
+    created_time = time.mktime(time.strptime(user.GetCreatedAt(), "%a %b %d %H:%M:%S +0000 %Y"))
+    relative_created_time = datetime.timedelta(seconds = (current_time - created_time))
+    return relative_created_time < datetime.timedelta(days = settings.SPAM_CREATED_DAY_LIMIT) \
+        and (user.GetFriendsCount() > settings.SPAM_FRIENDS_LIMIT or user.GetFriendsCount() == 0)
+  
 def is_id_suspended(user_id):
     while True:
         try:
-            settings.record_api.GetUser(user_id)
+            user = settings.read_api.GetUser(user_id)
             time.sleep(settings.COMMAND_INTERVAL)
-            return False
+            return False, is_user_spam(user)
         except twitter.TwitterError as err:
             if err[0][0]['code'] == 63 or err[0][0]['code'] == 34:
                 
                 if settings.DEBUG:
                     logger.info('suspended id: ' + str(user_id)) 
                 time.sleep(settings.COMMAND_INTERVAL)
-                return True
+                return True, False
             else:
                 handle_rate_exceeded(err)
         
