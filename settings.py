@@ -4,7 +4,7 @@ import twitter
 
 DEBUG = True
 
-TESTER = 'qizhen'   # available values:  'qizhen', 'zhouli', 'xiaofeng'
+TESTER = 'qizhen'   # available values:  'qizhen', 'zhuoli', 'xiaofeng'
 
 
 COMMAND_INTERVAL = 15
@@ -52,7 +52,7 @@ if TESTER == 'qizhen':
                        access_token_secret='hA2pbcW1bZ3exZsHYnVlZe8dvbzJw4977FJ90YcGOhYSp',
                        debugHTTP=True)
     SEP = 'q'
-elif TESTER == 'zhouli':
+elif TESTER == 'zhuoli':
     crawler_api = twitter.Api(consumer_key='NdjOmEQsGTwgHfwLG6Q',
                        consumer_secret='XkJPnRzTBVQtZqVAaVJFsFA6egQPLWW7SSTAicBM2Q',
                        access_token_key='2173042874-dz5O0xfmQtbSDYDklXdggLQGk6yhnNaaf77nBNe',
