@@ -109,6 +109,9 @@ def is_id_suspended(user_id):
             user = settings.read_api.GetUser(user_id)
             time.sleep(settings.COMMAND_INTERVAL)
             return False, is_user_spam(user)
+        #if we can get the user's information in any of these trials, then it is not suspended;
+        #or we will receive an error, we then record its ID and mark this as suspended.
+        #Otherwise, there is some exception, handle it by wait a time interval and restart
         except twitter.TwitterError as err:
             if err[0][0]['code'] == 63 or err[0][0]['code'] == 34:
                 
@@ -122,14 +125,17 @@ def is_id_suspended(user_id):
                         
 def is_id_in_record(user_id):
     return user_id in normal_accounts or user_id in posted_spams or user_id in spam_buffer
+#this ID has already been checked, we are not looking at it anymore.
 
 def add_to_normal_accounts(user_id):
     if len(normal_accounts) > 100000:
         normal_accounts.clear()
     normal_accounts.add(user_id)
 #     if settings.DEBUG:
-#         logger.info('total accounts: %d' % len(normal_accounts)) 
-        
+
+#record 100000 nornal accounts for future analize on the feature of normal accounts: these can be used as training set
+
+
 def add_to_posted_spams(user_id):
     posted_spams.add(user_id)
     

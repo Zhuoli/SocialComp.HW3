@@ -8,6 +8,8 @@ TESTER = 'qizhen'   # available values:  'qizhen', 'zhuoli', 'xiaofeng'
 
 
 COMMAND_INTERVAL = 15
+#we use 15 seconds as a waiting interval after each request, the value is a result of our trial: if we set it less, as 5, we will
+#suffer from error in the twitter API. while 15 is a safe value
 SUSPICIOUS_KEYWORDS = ['health', 'realty', 'mortgage', 'fast', 'offer', 
                        'check', 'easy', 'online', 'real estate', 'finance', 
                        'money', 'airline', 'rates', 'credit', 
@@ -27,13 +29,18 @@ SUSPICIOUS_KEYWORDS = ['health', 'realty', 'mortgage', 'fast', 'offer',
                        'cost', 'mate',
                        'pharmacy', 'Opportunity']
 KEYWORDS_COUNT = len(SUSPICIOUS_KEYWORDS)
+#We will reconsider the keyword pools to improve the performence
 
 SPAM_CREATED_DAY_LIMIT = 7
 SPAM_FRIENDS_LIMIT = 10
+#Only check those accounts created within 7 days
+#and having friends less then the SPAM_FRIENDS_LIMIT
 
 RECORD_LENGTH = 12
+#Because of the character limit of each tweets, we tweet once we have got RECORD_LENGTH number of suspicious accounts.
 
 RECORD_ID = 2151667861
+#Our main account cs5750
 write_api = twitter.Api(consumer_key='otyqFeLTbZiRjlC3KhKZA',
                    consumer_secret='s4EjBZgvaTkEyRyARigkRjCzLnhlfe63WYgNgPpO4',
                    access_token_key='2151667861-soLJni1pLpJ4TcLW6BJFSOiCGex9EaCGJWXZzSg',

@@ -23,6 +23,8 @@ class RecorderThread(threading.Thread):
                     for user_id in posted_ids:
                         if not twitter_ex.is_id_in_record(user_id):
                             suspend, spam = twitter_ex.is_id_suspended(user_id)
+                            #check if this is already suspended;
+                            #only when it is not suspended then output it as spammer.
                             if not suspend and spam:  
                                 print user_id
                             twitter_ex.add_to_posted_spams(user_id)

@@ -29,6 +29,8 @@ def main():
                 if len(line) == 11:
                     try:
                         item = api.GetUser(line)
+                        #When we cannot get the reply of this request, that means the account is suspended.
+                        #According to the documentary of twitter API, err code 63 and 34 means the user is suspended
                     except twitter.TwitterError as err:
                         if err[0][0]['code'] == 63 or err[0][0]['code'] == 34:
                             print line

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#This is our trial version, to test most of API used...
 '''connect to Twitter and output user IDs that will be banned'''
 
 import time

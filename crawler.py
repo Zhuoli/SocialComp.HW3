@@ -12,6 +12,10 @@ def is_url_spam(urls):
             if site in url.expanded_url:
                 return True
     return False
+#This function is used to judge whether a url is likely to be a spamming URL.
+#According to the previous studies, these sites are the most famous shortening URL providers, and URL shortening is a strong feature
+#of Twitter spammers.
+
 
 class CrawlerThread(threading.Thread):
     def __init__(self):
