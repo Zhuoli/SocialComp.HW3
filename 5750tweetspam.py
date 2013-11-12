@@ -7,6 +7,7 @@ import time
 import crawler
 import recorder
 import settings
+import streamer
 
 
 def main():
@@ -19,23 +20,32 @@ def main():
             # check and print out spam
             twitter_recorder = recorder.RecorderThread()
             twitter_recorder.start()
+
+            # use stream api to find spam accounts
+            twitter_streamer = streamer.StreamerThread()
+            twitter_streamer.start()
             
-            twitter_crawler.join()
+            twitter_streamer.join()
         except:
             if settings.DEBUG:
                 print '**************** exception, restart ******************************' 
                     
-            try:
-                twitter_crawler.stop()
-            except:
-                pass
-            
-            try:
-                twitter_recorder.stop()
-            except:
-                pass
-            
-            time.sleep(600)
+        try:
+            twitter_crawler.stop()
+        except:
+            pass
+        
+        try:
+            twitter_recorder.stop()
+        except:
+            pass
+        
+        try:
+            twitter_streamer.stop()
+        except:
+            pass
+        
+        time.sleep(600)
 
 if __name__ == "__main__":
     main()

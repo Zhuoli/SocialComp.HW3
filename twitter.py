@@ -4632,7 +4632,7 @@ class Api(object):
     for line in json.iter_lines():
       if line:
         data = self._ParseAndCheckTwitter(line)
-        yield data
+        yield Status.NewFromJsonDict(data)
 
   def VerifyCredentials(self):
     '''Returns a twitter.User instance if the authenticating user is valid.

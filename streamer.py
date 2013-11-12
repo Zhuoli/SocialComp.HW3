@@ -3,8 +3,8 @@ import logging
   
 import twitter_ex
 import settings
-
-class CrawlerThread(threading.Thread):
+    
+class StreamerThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.stop_flag = False
@@ -13,18 +13,10 @@ class CrawlerThread(threading.Thread):
         if settings.DEBUG:
             logger = logging.getLogger('QQ')
         try:
-            keyword_index = -1
-            while not self.stop_flag:
-                if keyword_index < settings.KEYWORDS_COUNT- 1:
-                    keyword_index += 1
-                else:
-                    keyword_index = 0
-                tweets = twitter_ex.tweet_search(settings.SUSPICIOUS_KEYWORDS[keyword_index])
-                
-#                 if settings.DEBUG:
-#                     logger.info('%s: %d' % (settings.SUSPICIOUS_KEYWORDS[keyword_index], len(tweets)))
-                
-                for tweet in tweets:
+            for tweet in settings.stream_api.GetStreamSample():
+                if self.stop_flag:
+                    break
+                if tweet.GetId():
                     if twitter_ex.is_url_spam(tweet.urls):
                         user = tweet.GetUser()
                         user_id = user.GetId()
@@ -32,13 +24,14 @@ class CrawlerThread(threading.Thread):
                             if twitter_ex.is_user_spam(user):
                                 print user_id
                                 if settings.DEBUG:
+                                    print tweet.GetText().encode('ascii','ignore')
                                     logger.info('newly found spam: %d' % user_id)
                                 twitter_ex.add_to_spam_buffer(user_id)
                             else:
                                 twitter_ex.add_to_normal_accounts(user_id)
-        except:
+        except Exception as err:
             if settings.DEBUG:
-                logger.info('CrawlerThread exception')
+                logger.info('StreamerThread exception')
         
     def stop(self):
         self.stop_flag = True

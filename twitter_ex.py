@@ -38,6 +38,15 @@ spam_buffer = set()
 record_recent_id = 396755128352784384
 keword_recent_id = {}
 
+    
+def is_url_spam(urls):
+    suspicus_sites = ['bit.ly', 'tinyurl.com', 'is.gd', 'goo.gl', 'ow.ly', 
+                      'dlvr.it', 'tiny.cc', '3.ly', 'tiny.ly']
+    for url in urls:
+        for site in suspicus_sites:
+            if site in url.expanded_url:
+                return True
+    return False
 
 def handle_rate_exceeded(err):
     if settings.DEBUG:

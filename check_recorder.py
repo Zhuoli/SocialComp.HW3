@@ -17,7 +17,8 @@ def main():
     found = 0
     for user_id in posted_ids:
         print user_id,
-        if twitter_ex.is_id_suspended(user_id):  
+        suspended, spam = twitter_ex.is_id_suspended(user_id)
+        if suspended:  
             found += 1
             print '***** %d' % found
             

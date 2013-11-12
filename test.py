@@ -2,34 +2,38 @@
 
 
 import twitter
-import inspect
+
 
 
 
 
 def main():
     
-    api = twitter.Api(consumer_key='sW6sjRTRekP8L0m4rPmVg',
-                   consumer_secret='PUa0mSgDrCCW7RsCHoLMrvy2ViqgbKKEd8CIGDGw1c',
-                   access_token_key='12996082-gvzUgnfZe0uIDgol1FD4y1RI1xDIyCxENO6r0BfrD',
-                   access_token_secret='UJgSMVp60ip7NM9j8h9iat6iXU8nQSMoPEBA5oJaSIcba',
-                   debugHTTP=True)
+    api = twitter.Api(consumer_key='FYqPmH4FH8OYBB4ODXxR7g',
+                       consumer_secret='ktcP965ujmV9pBFkcTd1MAs19OmfljIybrfK83QDA',
+                       access_token_key='2173047476-f6o12AlzoWe0cAzlR8q9mkSMkUoztWc69wxXNm8',
+                       access_token_secret='vfXAy7WuOFxyMBAtHMRbdXPkB3NvpCqW58LgwtIxNSz8m',
+                       debugHTTP=True)   
      
      
 #     status = api.GetUserTimeline(screen_name = 'cs5750')
 #     for item in status:
 #         print item
-     
-    item = api.GetUser(2174000226)
-    print item.GetId()
-    print item.GetVerified()
-    print item.GetStatusesCount()
-    print item.GetFollowersCount()
-    print item.GetFriendsCount()
-    print item.GetProfileBackgroundImageUrl()
-    print item.GetLocation()
-    print item.GetDescription()
-    print item
+
+
+    for sample in api.GetStreamSample(delimited=None, stall_warnings=None):
+        print sample.GetUser()
+    
+#     item = api.GetUser(2174000226)
+#     print item.GetId()
+#     print item.GetVerified()
+#     print item.GetStatusesCount()
+#     print item.GetFollowersCount()
+#     print item.GetFriendsCount()
+#     print item.GetProfileBackgroundImageUrl()
+#     print item.GetLocation()
+#     print item.GetDescription()
+#     print item
 #     while True:
 #         results = api.GetFollowerIDs('ruanqizhen')
 #         print results

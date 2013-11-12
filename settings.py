@@ -7,7 +7,7 @@ DEBUG = True
 TESTER = 'qizhen'   # available values:  'qizhen', 'zhuoli', 'xiaofeng'
 
 
-COMMAND_INTERVAL = 15
+COMMAND_INTERVAL = 5
 SUSPICIOUS_KEYWORDS = ['health', 'realty', 'mortgage', 'fast', 'offer', 
                        'check', 'easy', 'online', 'real estate', 'finance', 
                        'money', 'airline', 'rates', 'credit', 
@@ -50,6 +50,11 @@ if TESTER == 'qizhen':
                        consumer_secret='3kiY4ivTmtiIiAWjkdjRy3u2ud7Db8IPHwunf3rXJw',
                        access_token_key='2187124202-mMvx2qoUEaPAWIAla701cjCBnAeuvDc1NYVSXh5',
                        access_token_secret='hA2pbcW1bZ3exZsHYnVlZe8dvbzJw4977FJ90YcGOhYSp',
+                       debugHTTP=True)
+    stream_api = twitter.Api(consumer_key='rHp99F6nYAVe7TYV7kS3g',
+                       consumer_secret='SZpFOwz7IOsrFqPTtu3M1gGCjipzgdlJH1JxIdSa4',
+                       access_token_key='2190941173-tMgaELUBQ8CwGqUSLL4X42XA2RRwbg5pe5HOgff',
+                       access_token_secret='IT1EkCYccQpHOgUTfy45Cx1ayP0TrNpj1R1zcQX9lm9CP',
                        debugHTTP=True)
     SEP = 'q'
 elif TESTER == 'zhuoli':
