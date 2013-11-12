@@ -4,7 +4,7 @@ import twitter
 
 DEBUG = True
 
-TESTER = 'qizhen'   # available values:  'qizhen', 'zhuoli', 'xiaofeng'
+TESTER = ''   # available values:  'qizhen', 'zhuoli', 'xiaofeng'
 
 COMMAND_INTERVAL = 5
 #we use 5 seconds as a waiting interval after each request, the value is a result of our trial: if we set it less, as 1, we will
