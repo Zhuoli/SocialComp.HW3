@@ -32,7 +32,7 @@ class CrawlerThread(threading.Thread):
                             if twitter_ex.is_user_spam(user):
                                 print user_id
                                 if settings.DEBUG:
-                                    logger.info('newly found spam: %d' % user_id)
+                                    logger.info('newly found in search: %d' % user_id)
                                 twitter_ex.add_to_spam_buffer(user_id)
                             else:
                                 twitter_ex.add_to_normal_accounts(user_id)

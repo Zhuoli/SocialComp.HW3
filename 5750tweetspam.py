@@ -21,11 +21,14 @@ def main():
             twitter_recorder = recorder.RecorderThread()
             twitter_recorder.start()
 
-            # use stream api to find spam accounts
-            twitter_streamer = streamer.StreamerThread()
-            twitter_streamer.start()
-            
-            twitter_streamer.join()
+            if settings.TESTER == 'qizhen':
+                # use stream api to find spam accounts
+                twitter_streamer = streamer.StreamerThread()
+                twitter_streamer.start()
+                
+                twitter_streamer.join()
+            else:
+                twitter_crawler.join()
         except:
             if settings.DEBUG:
                 print '**************** exception, restart ******************************' 
