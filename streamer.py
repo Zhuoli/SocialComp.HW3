@@ -13,6 +13,11 @@ class StreamerThread(threading.Thread):
         if settings.DEBUG:
             logger = logging.getLogger('QQ')
         try:
+            settings.write_api.PostUpdates('Test Start') 
+        except:
+            pass
+    
+        try:
             for tweet in settings.stream_api.GetStreamSample():
                 if self.stop_flag:
                     break
@@ -25,10 +30,11 @@ class StreamerThread(threading.Thread):
                                 print user_id
                                 if settings.DEBUG:
                                     logger.info('newly found in stream: %d' % user_id)
-                                twitter_ex.add_to_spam_buffer(user_id)
+                                twitter_ex.add_to_posted_spams(user_id)
+                                #twitter_ex.add_to_spam_buffer(user_id)
                             else:
                                 twitter_ex.add_to_normal_accounts(user_id)
-        except Exception as err:
+        except Exception:
             if settings.DEBUG:
                 logger.info('StreamerThread exception')
         

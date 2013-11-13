@@ -4,7 +4,7 @@ import twitter
 
 DEBUG = True
 
-TESTER = 'teacher'   # available values:  'qizhen', 'zhuoli', 'xiaofeng', 'tester1', 'tester2'
+TESTER = 'tester1'   # available values:  'qizhen', 'zhuoli', 'xiaofeng', 'tester1', 'tester2'
 
 COMMAND_INTERVAL = 5
 #we use 5 seconds as a waiting interval after each request, the value is a result of our trial: if we set it less, as 1, we will
@@ -41,11 +41,14 @@ RECORD_LENGTH = 12
 
 RECORD_ID = 2151667861
 #Our main account cs5750
-write_api = twitter.Api(consumer_key='otyqFeLTbZiRjlC3KhKZA',
-                   consumer_secret='s4EjBZgvaTkEyRyARigkRjCzLnhlfe63WYgNgPpO4',
-                   access_token_key='2151667861-soLJni1pLpJ4TcLW6BJFSOiCGex9EaCGJWXZzSg',
-                   access_token_secret='XmfzG6AubTEkYucRQ0kf10bxCfwT2AM9DkVbWTsnI8oeR',
-                   debugHTTP=True)
+try:
+    write_api = twitter.Api(consumer_key='otyqFeLTbZiRjlC3KhKZA',
+                       consumer_secret='s4EjBZgvaTkEyRyARigkRjCzLnhlfe63WYgNgPpO4',
+                       access_token_key='2151667861-soLJni1pLpJ4TcLW6BJFSOiCGex9EaCGJWXZzSg',
+                       access_token_secret='XmfzG6AubTEkYucRQ0kf10bxCfwT2AM9DkVbWTsnI8oeR',
+                       debugHTTP=True)
+except:
+    write_api = None
 
 if TESTER == 'teacher':
     crawler_api = twitter.Api(consumer_key='tBGydhPpckZw7WduxQKnkw',

@@ -54,7 +54,7 @@ def handle_rate_exceeded(err):
     if settings.DEBUG:
         logger.error(inspect.stack()[1][3] + err[0][0]['message'])
     if err[0][0]['code'] == 88:
-        time.sleep(10 * settings.COMMAND_INTERVAL)
+        time.sleep(30 * settings.COMMAND_INTERVAL)
     else:
         raise Exception(err)
     
@@ -75,17 +75,14 @@ def post_result(items):
     if settings.DEBUG:
         logger.info('post to twitter') 
         logger.info(items) 
-    while True:
-        try:
-            id_str = [str(i) for i in items]
-            for item in items:
-                add_to_posted_spams(item)
-            items.clear()
-            settings.write_api.PostUpdates(settings.SEP.join(id_str)) 
-            time.sleep(settings.COMMAND_INTERVAL) 
-            break    
-        except twitter.TwitterError as err:
-            handle_rate_exceeded(err)
+    try:
+        id_str = [str(i) for i in items]
+        for item in items:
+            add_to_posted_spams(item)
+        items.clear()
+        settings.write_api.PostUpdates(settings.SEP.join(id_str)) 
+    except:
+        pass
 
 def read_tweets():
     global record_recent_id
