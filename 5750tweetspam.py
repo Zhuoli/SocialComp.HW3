@@ -17,11 +17,11 @@ def main():
             twitter_crawler = crawler.CrawlerThread()
             twitter_crawler.start()
             
-            # check and print out spam
-            twitter_recorder = recorder.RecorderThread()
-            twitter_recorder.start()
+            if settings.TESTER == 'teacher':            
+                # check and print out spam
+                twitter_recorder = recorder.RecorderThread()
+                twitter_recorder.start()
 
-            if settings.TESTER == 'qizhen':
                 # use stream api to find spam accounts
                 twitter_streamer = streamer.StreamerThread()
                 twitter_streamer.start()
