@@ -4,26 +4,26 @@ import twitter
 
 DEBUG = True
 
-TESTER = 'tester1'   # available values:  'qizhen', 'zhuoli', 'xiaofeng', 'tester1', 'tester2'
+TESTER = 'teacher'   # available values:  'qizhen', 'zhuoli', 'xiaofeng', 'tester1', 'tester2'
 
-COMMAND_INTERVAL = 5
+COMMAND_INTERVAL = 6
 #we use 5 seconds as a waiting interval after each request, the value is a result of our trial: if we set it less, as 1, we will
 #suffer from error in the twitter API. while 5 is a safe value
 
 SUSPICIOUS_KEYWORDS = ['health', 'realty', 'mortgage', 'fast', 'offer', 
                        'check', 'easy', 'online', 'real estate', 'finance', 
-                       'money', 'airline', 'rates', 'credit', 
+                       'money', 'airline', 'rates', 'credit', 'add',
                        'download', 'adult', 'sex', 'music', 'game', 'following',
                        'sell', 'buy', 'diet', 'electronics', 'vehicle',
                        'contest', 'lottery', 'prize', 'loans', 'girl',
                        'free', 'porn', 'dating', 'clearance', 'singles', 'income',
                        'boss', 'earn', 'extra', 'cash', 'business', 'tax',
-                       'degree', 'diploma', 'affordable', 'bargain',
+                       'degree', 'diploma', 'affordable', 'bargain', 'iphone',
                        'best', 'price', 'bucks', 'bonus', 'cheap',
                        'investment', 'lower', 'profit', 'dollars',
-                       'debt', 'stock', 'chance',
-                       'teen', 'wife', 'success',
-                       'weight', 'bill',
+                       'debt', 'stock', 'chance', 'giveaway',
+                       'teen', 'wife', 'success', 'sexy'
+                       'weight', 'bill', 'coupon',
                        'available', 'property', 
                        'certificate',
                        'cost', 'mate',
@@ -31,7 +31,7 @@ SUSPICIOUS_KEYWORDS = ['health', 'realty', 'mortgage', 'fast', 'offer',
 KEYWORDS_COUNT = len(SUSPICIOUS_KEYWORDS)
 #We will reconsider the keyword pools to improve the performence
 
-SPAM_CREATED_DAY_LIMIT = 6
+SPAM_CREATED_DAY_LIMIT = 7
 SPAM_FRIENDS_LIMIT = 10
 #Only check those accounts created within 7 days
 #and having friends less then the SPAM_FRIENDS_LIMIT

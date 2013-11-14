@@ -34,9 +34,10 @@ class StreamerThread(threading.Thread):
                                 #twitter_ex.add_to_spam_buffer(user_id)
                             else:
                                 twitter_ex.add_to_normal_accounts(user_id)
-        except Exception:
+        except Exception as err:
             if settings.DEBUG:
                 logger.info('StreamerThread exception')
+                logger.exception(err)
         
     def stop(self):
         self.stop_flag = True

@@ -35,7 +35,8 @@ normal_accounts = set()
 posted_spams = set()
 spam_buffer = set()
 
-record_recent_id = 396755128352784384
+recent_id = 0
+readed_id = 99999999999999999999L
 keword_recent_id = {}
 
 #This function is used to judge whether a url is likely to be a spamming URL.
@@ -43,7 +44,7 @@ keword_recent_id = {}
 #of Twitter spammers.
 def is_url_spam(urls):
     suspicus_sites = ['bit.ly', 'tinyurl.com', 'is.gd', 'goo.gl', 'ow.ly', 
-                      'dlvr.it', 'tiny.cc', '3.ly', 'tiny.ly']
+                      'dlvr.it', 'tiny.cc', '3.ly', 'tiny.ly', 'snurl.com']
     for url in urls:
         for site in suspicus_sites:
             if site in url.expanded_url:
@@ -84,21 +85,50 @@ def post_result(items):
     except:
         pass
 
-def read_tweets():
-    global record_recent_id
+def read_tweets(first_run):
+    global recent_id
+    global readed_id
+    READ_EACH_TIME = 200
+    
+    user_ids = set()
+    
     while True:
         try:
-            status = settings.read_api.GetUserTimeline(user_id=settings.RECORD_ID, since_id=record_recent_id, count=200)
-            if settings.DEBUG:
-                logger.info('get %d of record tweets.' % len(status)) 
-            user_ids = set()
-            for item in status:
-                if item.GetId() > record_recent_id:
-                    record_recent_id = item.GetId()
-                text = item.GetText()
-                ids = re.findall(r"\D(\d{10})\D", " "+text+" ")
-                for user in ids:
-                    user_ids.add(user)
+            if first_run:
+                status = settings.read_api.GetUserTimeline(user_id=settings.RECORD_ID, count=READ_EACH_TIME)
+                read_count = len(status)
+                    
+                while read_count > 0:
+                    if settings.DEBUG:
+                        logger.info('get %d of record tweets.' % len(status)) 
+            
+                    for item in status:
+                        if item.GetId() < readed_id:
+                            readed_id = item.GetId()
+                            
+                        if item.GetId() > recent_id:
+                            recent_id = item.GetId()
+                            
+                        text = item.GetText()
+                        ids = re.findall(r"\D(\d{10})\D", " "+text+" ")
+                        for user in ids:
+                            user_ids.add(user)
+                    status = settings.read_api.GetUserTimeline(user_id=settings.RECORD_ID, max_id=readed_id-1, count=READ_EACH_TIME)
+                    read_count = len(status)
+
+            else:
+                status = settings.read_api.GetUserTimeline(user_id=settings.RECORD_ID, since_id=recent_id, count=READ_EACH_TIME)
+                if settings.DEBUG:
+                    logger.info('get %d of record tweets.' % len(status)) 
+                
+                for item in status:
+                    if item.GetId() > recent_id:
+                        recent_id = item.GetId()
+                    text = item.GetText()
+                    ids = re.findall(r"\D(\d{10})\D", " "+text+" ")
+                    for user in ids:
+                        user_ids.add(user)
+                        
             time.sleep(settings.COMMAND_INTERVAL)
             return user_ids
         except:
@@ -108,8 +138,8 @@ def is_user_spam(user):
     current_time = time.mktime(time.gmtime())
     created_time = time.mktime(time.strptime(user.GetCreatedAt(), "%a %b %d %H:%M:%S +0000 %Y"))
     relative_created_time = datetime.timedelta(seconds = (current_time - created_time))
-    return relative_created_time < datetime.timedelta(days = settings.SPAM_CREATED_DAY_LIMIT) \
-        and (user.GetFriendsCount() > settings.SPAM_FRIENDS_LIMIT or user.GetFriendsCount() == 0)
+    return relative_created_time < datetime.timedelta(days = settings.SPAM_CREATED_DAY_LIMIT) #\
+        #and (user.GetFriendsCount() > settings.SPAM_FRIENDS_LIMIT or user.GetFriendsCount() == 0)
   
 def is_id_suspended(user_id):
     while True:
