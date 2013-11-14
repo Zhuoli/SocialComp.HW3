@@ -9,7 +9,6 @@ import recorder
 import settings
 import streamer
 
-
 def main():
     while True:
         try:
